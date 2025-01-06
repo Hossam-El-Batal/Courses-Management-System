@@ -24,3 +24,13 @@ This repository contains the implementation of a courses-management-system:
 
 - To run unit tests : python manage.py test
 
+## Notes
+- This permission access to the projects endpoints would be re-adjusted based on the business model
+
+ 
+ ## Demo
+
+ 
+
+https://github.com/user-attachments/assets/815d2e48-e85d-412b-a51c-220df198831f
+
