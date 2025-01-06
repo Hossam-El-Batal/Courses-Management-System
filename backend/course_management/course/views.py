@@ -10,6 +10,7 @@ class CreateCourseView(APIView):
 
     def get(self, request):
         return render(request, 'courses/create_course.html')
+
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
         if serializer.is_valid():
@@ -19,6 +20,7 @@ class CreateCourseView(APIView):
 
 
 class ListCoursesView(APIView):
+
     def get(self, request):
         courses = Course.objects.all()
         serializer = CourseSerializer(courses, many=True)
@@ -26,6 +28,7 @@ class ListCoursesView(APIView):
 
 
 class GetCourseView(APIView):
+
     def get(self, request, pk):
         course = get_object_or_404(Course, pk=pk)
         serializer = CourseSerializer(course)
@@ -36,6 +39,7 @@ class UpdateCourseView(APIView):
     def get(self, request, pk):
         course = get_object_or_404(Course, pk=pk)
         return render(request, 'courses/update_course.html', {'course': course})
+
 
     def post(self, request, pk):
         course = get_object_or_404(Course, pk=pk)
@@ -61,10 +65,12 @@ class DeleteCourseView(APIView):
 
 
 class AssignTrainerToCourseView(APIView):
+
     def get(self, request, pk):
         course = get_object_or_404(Course, pk=pk)
         trainers = Trainer.objects.all()
         return render(request, 'courses/assign_trainer.html', {'course': course, 'trainers': trainers})
+
 
     def post(self, request, pk):
         course = get_object_or_404(Course, pk=pk)

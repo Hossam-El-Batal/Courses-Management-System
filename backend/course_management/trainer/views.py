@@ -8,7 +8,6 @@ from django.shortcuts import get_object_or_404
 
 
 class CreateTrainerView(APIView):
-
     def get(self, request):
         return render(request, 'trainers/create_trainer.html')
     def post(self, request):
@@ -28,11 +27,13 @@ class ListTrainersView(APIView):
         serializer = TrainerSerializer(trainers, many=True)
         return render(request, 'trainers/list_trainers.html', {'trainers': trainers})
 
+
 class GetTrainerView(APIView):
     def get(self, request, pk):
         trainer = get_object_or_404(Trainer, pk=pk)
         serializer = TrainerSerializer(trainer)
         return render(request, 'trainers/get_trainer.html', {'trainer': trainer})
+
 
 class UpdateTrainerView(APIView):
 
@@ -47,13 +48,7 @@ class UpdateTrainerView(APIView):
             serialized_data.save()
             return redirect('list-trainers')
         return render(request, 'trainers/update_trainer.html', {'trainer': trainer, 'errors': serialized_data.errors})
-    # def put(self, request, pk):
-    #     trainer = get_object_or_404(Trainer, pk=pk)
-    #     serializer = TrainerSerializer(trainer, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class DeleteTrainerView(APIView):
     def get(self, request, pk):
@@ -64,13 +59,5 @@ class DeleteTrainerView(APIView):
         trainer = get_object_or_404(Trainer, pk=pk)
         trainer.delete()
         return redirect('list-trainers')
-# class DeleteTrainerView(APIView):
-#     def delete(self, request, pk):
-#         trainer = get_object_or_404(Trainer, pk=pk)
-#         trainer.delete()
-#         return Response({"message": "Trainer Deleted"},status=status.HTTP_204_NO_CONTENT)
-#
-#
-
 
 

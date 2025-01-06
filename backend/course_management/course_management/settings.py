@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'trainer',
     'course',
     'payment',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

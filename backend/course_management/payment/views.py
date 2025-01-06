@@ -8,6 +8,8 @@ from django.db.models import Sum, F
 from datetime import datetime
 from django.shortcuts import render
 from .models import Payment, Trainer, Course
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 class CreatePaymentView(APIView):
@@ -19,6 +21,7 @@ class CreatePaymentView(APIView):
             'trainers': trainers,
             'courses': courses
         })
+
     def post(self, request):
         print(request.data)
         serializer = PaymentSerializer(data=request.data)
@@ -33,6 +36,7 @@ class CreatePaymentView(APIView):
 
 
 class ListPaymentsView(APIView):
+
     def get(self, request):
         payments = Payment.objects.all().select_related('trainer', 'course')
 
@@ -66,6 +70,7 @@ class ListPaymentsView(APIView):
 
 
 class GetPaymentView(APIView):
+
     def get(self, request, pk):
         payment = get_object_or_404(Payment, pk=pk)
         serializer = PaymentSerializer(payment)
@@ -114,6 +119,7 @@ class DeletePaymentView(APIView):
 
 
 class PaymentReportView(APIView):
+
     def get(self, request):
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
