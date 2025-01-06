@@ -1,0 +1,26 @@
+{% if course.trainer %}
+    <div class="alert alert-info">
+        <h3>Current Trainer: {{ course.trainer.name }}</h3>
+        <form method="post" action="{% url 'assign-trainer' pk=course.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="unassign" value="1">
+            <button type="submit" class="btn btn-danger">Unassign Trainer</button>
+        </form>
+    </div>
+{% else %}
+    <div class="alert alert-warning">
+        <h3>No trainer assigned yet.</h3>
+        <form method="post" action="{% url 'assign-trainer' pk=course.pk %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="trainer_id" class="form-label">Select Trainer:</label>
+                <select name="trainer_id" id="trainer_id" class="form-select">
+                    {% for trainer in trainers %}
+                        <option value="{{ trainer.pk }}">{{ trainer.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Assign Trainer</button>
+        </form>
+    </div>
+{% endif %}

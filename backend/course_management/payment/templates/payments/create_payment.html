@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Payment{% endblock %}
+
+{% block content %}
+    <h2>Create Payment</h2>
+
+    <form method="post" action="{% url 'create-payment' %}">
+        {% csrf_token %}
+        <label for="trainer_id">Trainer:</label>
+        <select name="trainer_id" id="trainer_id" class="form-control">
+            {% for trainer in trainers %}
+                <option value="{{ trainer.pk }}">{{ trainer.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="course_id">Course:</label>
+        <select name="course_id" id="course_id" class="form-control">
+            {% for course in courses %}
+                <option value="{{ course.pk }}">{{ course.title }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="amount">Amount:</label>
+        <input type="number" name="amount" id="amount" class="form-control">
+
+        <label for="hours_worked">Hours Worked:</label>
+        <input type="number" name="hours_worked" id="hours_worked" class="form-control">
+
+        <label for="payment_date">Payment Date:</label>
+        <input type="date" name="payment_date" id="payment_date" class="form-control">
+
+        <button type="submit" class="btn btn-primary mt-2">Create Payment</button>
+    </form>
+{% endblock %}

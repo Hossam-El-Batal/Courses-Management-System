@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,46 +9,68 @@ from django.shortcuts import get_object_or_404
 
 class CreateTrainerView(APIView):
 
+    def get(self, request):
+        return render(request, 'trainers/create_trainer.html')
     def post(self, request):
         if request.method == "POST":
             serialized_data = TrainerSerializer(data=request.data)
 
             if serialized_data.is_valid():
                 serialized_data.save()
-                return Response(serialized_data.data, status=status.HTTP_201_CREATED)
+                return redirect('list-trainers')
 
-        else:
-            return Response({"message": "Method not allowed"}, status=status.HTTP_400_BAD_REQUEST)
+        return render(request, 'trainers/create_trainer.html', {'message': 'Method not allowed'})
 
 
 class ListTrainersView(APIView):
     def get(self, request):
         trainers = Trainer.objects.all()
         serializer = TrainerSerializer(trainers, many=True)
-        return Response(serializer.data)
+        return render(request, 'trainers/list_trainers.html', {'trainers': trainers})
 
 class GetTrainerView(APIView):
     def get(self, request, pk):
         trainer = get_object_or_404(Trainer, pk=pk)
         serializer = TrainerSerializer(trainer)
-        return Response(serializer.data)
+        return render(request, 'trainers/get_trainer.html', {'trainer': trainer})
 
 class UpdateTrainerView(APIView):
-    def put(self, request, pk):
+
+    def get(self, request, pk):
         trainer = get_object_or_404(Trainer, pk=pk)
-        serializer = TrainerSerializer(trainer, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return render(request, 'trainers/update_trainer.html', {'trainer': trainer})
+
+    def post(self, request, pk):
+        trainer = get_object_or_404(Trainer, pk=pk)
+        serialized_data = TrainerSerializer(trainer, data=request.data)
+        if serialized_data.is_valid():
+            serialized_data.save()
+            return redirect('list-trainers')
+        return render(request, 'trainers/update_trainer.html', {'trainer': trainer, 'errors': serialized_data.errors})
+    # def put(self, request, pk):
+    #     trainer = get_object_or_404(Trainer, pk=pk)
+    #     serializer = TrainerSerializer(trainer, data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DeleteTrainerView(APIView):
-    def delete(self, request, pk):
+    def get(self, request, pk):
+        trainer = get_object_or_404(Trainer, pk=pk)
+        return render(request, 'trainers/delete_trainer.html', {'trainer': trainer})
+
+    def post(self, request, pk):
         trainer = get_object_or_404(Trainer, pk=pk)
         trainer.delete()
-        return Response({"message": "Trainer Deleted"},status=status.HTTP_204_NO_CONTENT)
-
-
+        return redirect('list-trainers')
+# class DeleteTrainerView(APIView):
+#     def delete(self, request, pk):
+#         trainer = get_object_or_404(Trainer, pk=pk)
+#         trainer.delete()
+#         return Response({"message": "Trainer Deleted"},status=status.HTTP_204_NO_CONTENT)
+#
+#
 
 
 

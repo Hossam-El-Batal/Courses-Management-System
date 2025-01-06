@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Payment</title>
+</head>
+<body>
+    <h1>Update Payment</h1>
+    <form method="POST" action="{% url 'update-payment' payment.pk %}">
+        {% csrf_token %}
+        <label for="amount">Amount:</label>
+        <input type="text" name="amount" value="{{ payment.amount }}" required>
+        <label for="hours_worked">Hours Worked:</label>
+        <input type="text" name="hours_worked" value="{{ payment.hours_worked }}" required>
+        <label for="status">Status:</label>
+        <select name="status">
+            <option value="PENDING" {% if payment.status == "PENDING" %}selected{% endif %}>Pending</option>
+            <option value="PAID" {% if payment.status == "PAID" %}selected{% endif %}>Paid</option>
+            <option value="CANCELLED" {% if payment.status == "CANCELLED" %}selected{% endif %}>Cancelled</option>
+        </select>
+        <button type="submit">Update Payment</button>
+    </form>
+    <a href="{% url 'list-payments' %}">Back to Payments</a>
+</body>
+</html>

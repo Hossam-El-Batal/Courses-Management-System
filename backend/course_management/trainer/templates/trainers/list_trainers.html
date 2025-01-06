@@ -1,0 +1,35 @@
+{% extends 'trainers/base.html' %}
+
+{% block title %}List of Trainers{% endblock %}
+
+{% block content %}
+<h2 class="text-center mb-4">List of Trainers</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Expertise</th>
+            <th>Hourly Rate</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trainer in trainers %}
+        <tr>
+            <td>{{ trainer.name }}</td>
+            <td>{{ trainer.email }}</td>
+            <td>{{ trainer.phone }}</td>
+            <td>{{ trainer.expertise }}</td>
+            <td>${{ trainer.hourly_rate }}</td>
+            <td>
+                <a href="{% url 'get-trainer' trainer.pk %}" class="btn btn-info btn-sm">View</a>
+                <a href="{% url 'update-trainer' trainer.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'delete-trainer' trainer.pk %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this trainer?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

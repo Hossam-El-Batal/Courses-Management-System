@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Payment</title>
+</head>
+<body>
+    <h1>Are you sure you want to delete this payment?</h1>
+    <p><strong>Trainer:</strong> {{ payment.trainer.name }}</p>
+    <p><strong>Course:</strong> {{ payment.course.title }}</p>
+    <p><strong>Amount:</strong> ${{ payment.amount }}</p>
+    <p><strong>Hours Worked:</strong> {{ payment.hours_worked }} hours</p>
+    <form method="POST" action="{% url 'delete-payment' payment.pk %}">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete</button>
+    </form>
+    <a href="{% url 'list-payments' %}">Cancel</a>
+</body>
+</html>

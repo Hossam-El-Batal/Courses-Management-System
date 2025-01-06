@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Report{% endblock %}
+
+{% block content %}
+    <h2>Payment Report</h2>
+
+    <p>Total Payments: {{ summary.total_payments }}</p>
+    <p>Total Amount: {{ summary.total_amount }}</p>
+    <p>Total Hours Worked: {{ summary.total_hours }}</p>
+
+    <h3>Trainer Summary</h3>
+    <ul>
+        {% for trainer in summary.trainer_summary %}
+            <li>{{ trainer.trainer__name }}: Total Amount - {{ trainer.total_amount }} | Total Hours - {{ trainer.total_hours }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Course Summary</h3>
+    <ul>
+        {% for course in summary.course_summary %}
+            <li>{{ course.course__title }}: Total Amount - {{ course.total_amount }} | Total Hours - {{ course.total_hours }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

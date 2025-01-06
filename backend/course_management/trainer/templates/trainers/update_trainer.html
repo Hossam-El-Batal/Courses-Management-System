@@ -1,0 +1,33 @@
+{% extends 'trainers/base.html' %}
+
+{% block title %}Update Trainer{% endblock %}
+
+{% block content %}
+<h2>Update Trainer</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ trainer.name }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ trainer.email }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="text" class="form-control" id="phone" name="phone" value="{{ trainer.phone }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="expertise" class="form-label">Expertise</label>
+        <textarea class="form-control" id="expertise" name="expertise" required>{{ trainer.expertise }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="hourly_rate" class="form-label">Hourly Rate</label>
+        <input type="number" class="form-control" id="hourly_rate" name="hourly_rate" value="{{ trainer.hourly_rate }}" step="0.01" required>
+    </div>
+    <button type="submit" class="btn btn-warning">Update Trainer</button>
+</form>
+
+{% endblock %}

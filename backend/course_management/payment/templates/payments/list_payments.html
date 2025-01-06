@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}List of Payments{% endblock %}
+
+{% block content %}
+    <h2>Payments</h2>
+
+    <form method="get" action="{% url 'list-payments' %}">
+        <label for="start_date">Start Date:</label>
+        <input type="date" name="start_date" id="start_date">
+        <label for="end_date">End Date:</label>
+        <input type="date" name="end_date" id="end_date">
+        <label for="trainer_id">Trainer:</label>
+        <select name="trainer_id" id="trainer_id">
+            <option value="">All Trainers</option>
+            {% for trainer in trainers %}
+                <option value="{{ trainer.pk }}">{{ trainer.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Trainer</th>
+                <th>Course</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Payment Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.trainer.name }}</td>
+                    <td>{{ payment.course.title }}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td>{{ payment.status }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                    <td>
+                        <a href="{% url 'get-payment' pk=payment.pk %}">View</a> |
+                        <a href="{% url 'update-payment' pk=payment.pk %}">Edit</a> |
+                        <a href="{% url 'delete-payment' pk=payment.pk %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

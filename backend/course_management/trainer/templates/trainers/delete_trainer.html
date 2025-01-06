@@ -1,0 +1,36 @@
+{% extends 'trainers/base.html' %}
+
+{% block title %}Delete Trainer{% endblock %}
+
+{% block content %}
+<h2>Are you sure you want to delete this trainer?</h2>
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <td>{{ trainer.name }}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{ trainer.email }}</td>
+    </tr>
+    <tr>
+        <th>Phone</th>
+        <td>{{ trainer.phone }}</td>
+    </tr>
+    <tr>
+        <th>Expertise</th>
+        <td>{{ trainer.expertise }}</td>
+    </tr>
+    <tr>
+        <th>Hourly Rate</th>
+        <td>${{ trainer.hourly_rate }}</td>
+    </tr>
+</table>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete Trainer</button>
+    <a href="{% url 'list-trainers' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

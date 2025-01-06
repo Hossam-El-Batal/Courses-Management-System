@@ -1,11 +1,13 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Payment, CourseTrainerHours
 from .serializers import PaymentSerializer, CourseTrainerHoursSerializer
 from django.db.models import Sum, F
 from datetime import datetime
+from django.shortcuts import render
+from .models import Payment, Trainer
 
 
 class CreatePaymentView(APIView):
@@ -32,32 +34,44 @@ class ListPaymentsView(APIView):
         if trainer_id:
             payments = payments.filter(trainer_id=trainer_id)
 
-        serializer = PaymentSerializer(payments, many=True)
-        return Response(serializer.data)
+        trainers = Trainer.objects.all()
+
+        return render(request, 'payments/list_payments.html', {
+            'payments': payments,
+            'trainers': trainers,
+        })
 
 
 class GetPaymentView(APIView):
     def get(self, request, pk):
         payment = get_object_or_404(Payment, pk=pk)
         serializer = PaymentSerializer(payment)
-        return Response(serializer.data)
+        return render(request, './payments/payment_detail.html', {'payment': payment})
 
 
 class UpdatePaymentView(APIView):
-    def put(self, request, pk):
+
+    def get(self, request, pk):
         payment = get_object_or_404(Payment, pk=pk)
-        serializer = PaymentSerializer(payment, data=request.data)
-        if serializer.is_valid():
-            payment = serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return render(request, './payments/payment_update.html', {'payment': payment})
+    def post(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk)
+        payment.amount = request.POST.get('amount')
+        payment.hours_worked = request.POST.get('hours_worked')
+        payment.status = request.POST.get('status')
+        payment.save()
+        return redirect('get-payment', pk=payment.pk)
 
 
 class DeletePaymentView(APIView):
-    def delete(self, request, pk):
+
+    def get(self, request, pk):
+        payment = get_object_or_404(Payment, pk=pk)
+        return render(request, './payments/payment_confirm_delete.html', {'payment': payment})
+    def post(self, request, pk):
         payment = get_object_or_404(Payment, pk=pk)
         payment.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return redirect('list-payments')
 
 
 class PaymentReportView(APIView):
@@ -92,4 +106,4 @@ class PaymentReportView(APIView):
             ))
         }
 
-        return Response(summary)
+        return render(request, 'payments/payment_report.html', {'summary': summary})

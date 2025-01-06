@@ -1,0 +1,36 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}List of Courses{% endblock %}
+
+{% block content %}
+<h2>List of Courses</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Trainer</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.title }}</td>
+            <td>
+                {% if course.trainer %}
+                    {{ course.trainer.name }}
+                {% else %}
+                    No Trainer Assigned
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'assign-trainer' course.pk %}" class="btn btn-primary btn-sm">Assign Trainer</a>
+                <a href="{% url 'update-course' course.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'delete-course' course.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'create-course' %}" class="btn btn-primary">Create Course</a>
+{% endblock %}
