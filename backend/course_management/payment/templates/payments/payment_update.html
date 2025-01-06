@@ -1,26 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Payment</title>
-</head>
-<body>
-    <h1>Update Payment</h1>
-    <form method="POST" action="{% url 'update-payment' payment.pk %}">
-        {% csrf_token %}
-        <label for="amount">Amount:</label>
-        <input type="text" name="amount" value="{{ payment.amount }}" required>
-        <label for="hours_worked">Hours Worked:</label>
-        <input type="text" name="hours_worked" value="{{ payment.hours_worked }}" required>
-        <label for="status">Status:</label>
-        <select name="status">
-            <option value="PENDING" {% if payment.status == "PENDING" %}selected{% endif %}>Pending</option>
-            <option value="PAID" {% if payment.status == "PAID" %}selected{% endif %}>Paid</option>
-            <option value="CANCELLED" {% if payment.status == "CANCELLED" %}selected{% endif %}>Cancelled</option>
-        </select>
-        <button type="submit">Update Payment</button>
-    </form>
-    <a href="{% url 'list-payments' %}">Back to Payments</a>
-</body>
-</html>
+{% extends 'payments/base.html' %}
+
+{% block title %}Update Payment{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">Update Payment</h2>
+    </div>
+    <div class="card-body">
+        {% if errors %}
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    {% for field, error in errors.items %}
+                        <li>{{ field }}: {{ error.0 }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'update-payment' pk=payment.pk %}">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="trainer" class="form-label">Trainer</label>
+                    <select name="trainer" id="trainer_id" class="form-select" required>
+                        {% for trainer in trainers %}
+                            <option value="{{ trainer.pk }}" 
+                                    {% if trainer.pk == payment.trainer.pk %}selected{% endif %}>
+                                {{ trainer.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="course" class="form-label">Course</label>
+                    <select name="course" id="course_id" class="form-select" required>
+                        {% for course in courses %}
+                            <option value="{{ course.pk }}" 
+                                    {% if course.pk == payment.course.pk %}selected{% endif %}>
+                                {{ course.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <div class="col-md-6">
+                    <label for="hours_worked" class="form-label">Hours Worked</label>
+                    <input type="number" name="hours_worked" id="hours_worked" 
+                           class="form-control" value="{{ payment.hours_worked }}" 
+                           step="0.5" min="0" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="payment_date" class="form-label">Payment Date</label>
+                    <input type="date" name="payment_date" id="payment_date" 
+                           class="form-control" value="{{ payment.payment_date|date:'Y-m-d' }}" 
+                           required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select" required>
+                        <option value="PENDING" {% if payment.status == 'PENDING' %}selected{% endif %}>
+                            Pending
+                        </option>
+                        <option value="PAID" {% if payment.status == 'PAID' %}selected{% endif %}>
+                            Paid
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Update Payment</button>
+                    <a href="{% url 'list-payments' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

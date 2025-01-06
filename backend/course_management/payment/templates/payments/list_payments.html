@@ -1,51 +1,105 @@
-{% extends 'base.html' %}
+{% extends 'payments/base.html' %}
 
 {% block title %}List of Payments{% endblock %}
 
 {% block content %}
-    <h2>Payments</h2>
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">Payments</h2>
+            <a href="{% url 'create-payment' %}" class="btn btn-primary">Add New Payment</a>
+        </div>
+        <div class="card-body">
+            <form method="get" class="mb-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" name="start_date" id="start_date" class="form-control"
+                               value="{{ filters.start_date|default:'' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="date" name="end_date" id="end_date" class="form-control"
+                               value="{{ filters.end_date|default:'' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="trainer_id" class="form-label">Trainer</label>
+                        <select name="trainer_id" id="trainer_id" class="form-select">
+                            <option value="">All Trainers</option>
+                            {% for trainer in trainers %}
+                                <option value="{{ trainer.pk }}"
+                                        {% if trainer.pk|stringformat:"s" == filters.trainer_id %}selected{% endif %}>
+                                    {{ trainer.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="">All Status</option>
+                            <option value="PENDING" {% if filters.status == 'PENDING' %}selected{% endif %}>Pending</option>
+                            <option value="PAID" {% if filters.status == 'PAID' %}selected{% endif %}>Paid</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <a href="{% url 'list-payments' %}" class="btn btn-secondary">Reset</a>
+                    </div>
+                </div>
+            </form>
 
-    <form method="get" action="{% url 'list-payments' %}">
-        <label for="start_date">Start Date:</label>
-        <input type="date" name="start_date" id="start_date">
-        <label for="end_date">End Date:</label>
-        <input type="date" name="end_date" id="end_date">
-        <label for="trainer_id">Trainer:</label>
-        <select name="trainer_id" id="trainer_id">
-            <option value="">All Trainers</option>
-            {% for trainer in trainers %}
-                <option value="{{ trainer.pk }}">{{ trainer.name }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Filter</button>
-    </form>
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Trainer</th>
-                <th>Course</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Payment Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for payment in payments %}
-                <tr>
-                    <td>{{ payment.trainer.name }}</td>
-                    <td>{{ payment.course.title }}</td>
-                    <td>{{ payment.amount }}</td>
-                    <td>{{ payment.status }}</td>
-                    <td>{{ payment.payment_date }}</td>
-                    <td>
-                        <a href="{% url 'get-payment' pk=payment.pk %}">View</a> |
-                        <a href="{% url 'update-payment' pk=payment.pk %}">Edit</a> |
-                        <a href="{% url 'delete-payment' pk=payment.pk %}">Delete</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Trainer</th>
+                            <th>Course</th>
+                            <th>Amount</th>
+                            <th>Hours</th>
+                            <th>Status</th>
+                            <th>Payment Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.trainer.name }}</td>
+                                <td>{{ payment.course.title }}</td>
+                                <td>${{ payment.amount|floatformat:2 }}</td>
+                                <td>{{ payment.hours_worked }}</td>
+                                <td>
+                                    <span class="badge {% if payment.status == 'PAID' %}bg-success{% else %}bg-warning{% endif %}">
+                                        {{ payment.status }}
+                                    </span>
+                                </td>
+                                <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'update-payment' pk=payment.pk %}"
+                                           class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <a href="{% url 'delete-payment' pk=payment.pk %}"
+                                           class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center">No payments found</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
