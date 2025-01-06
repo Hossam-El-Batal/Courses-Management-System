@@ -19,15 +19,16 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="{% url 'list-payments' %}">Payments</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'create-payment' %}">Add Payment</a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'payment-report' %}">Payment Report</a>
                     </li>
                 </ul>
             </div>
         </nav>
+        <div class="text-center my-3">
+            <a href="{% url 'home' %}" class="btn btn-primary">Go to Home</a>
+        </div>
 
         <div class="my-4">
             {% block content %}{% endblock %}
